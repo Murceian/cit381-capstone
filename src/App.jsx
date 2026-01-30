@@ -1,40 +1,36 @@
 import { useState } from "react";
+import NewEntryView from "./NewEntryView.jsx";
+import ListView from "./ListView.jsx";
 
 const CATEGORIES = ["School", "Work", "Personal", "Health", "Other"];
 
 function App() {
-  const [showNewEntry, setShowNewEntry] = useState(true);
+  const [view, setView] = useState("new");
   const [category, setCategory] = useState(CATEGORIES[0]);
+  const [entries, setEntries] = useState([]);
+
+  const handleAddEntry = (entry) => {
+    setEntries([...entries, { id: Date.now(), ...entry }]);
+  };
 
   return (
     <div>
       <h1>Capstone Starter</h1>
-      <button onClick={() => setShowNewEntry(!showNewEntry)}>
-        {showNewEntry ? "Hide New Entry" : "Show New Entry"}
-      </button>
-      {showNewEntry && (
-        <div>
-          <h2>New Entry (Test View)</h2>{" "}
-          <div>
-            <label>
-              Category:{" "}
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <p>Selected category: {category}</p>
-        </div>
+      <div>
+        <button onClick={() => setView("new")}>New Entry</button>
+        <button onClick={() => setView("list")}>List</button>
+      </div>
+      {view === "new" && (
+        <NewEntryView 
+          category={category} 
+          setCategory={setCategory}
+          onAddEntry={handleAddEntry}
+        />
+      )}
+      {view === "list" && (
+        <ListView entries={entries} />
       )}
     </div>
   );
 }
-
 export default App;
